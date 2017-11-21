@@ -2,6 +2,8 @@
 
 const io = require('socket.io');
 const utils = require('./utils');
+const DEFAULT_ADAPTER = require('./adapters/webrtc-icebreaker-adapter');
+const inboundEvents = require('./events/events').inbound;
 
 const DEFAULT_SOCKET_PATH = '/socket';
 
@@ -12,9 +14,8 @@ class _SignalingServer {
    *
    * - If no path is provided, '/socket' default one will be used.
    *
-   * @param {http.Server|Number|Object} http server, port or options
+   * @param {http.Server|Number|Object} httpServer, port or options
    * @param {Object} [opts]
-   * @api public
    */
   constructor(httpServer, opts) {
     if (typeof httpServer === 'object' && !httpServer.listen) {
@@ -23,6 +24,7 @@ class _SignalingServer {
     }
     opts = opts || {};
     opts.path = opts.path || DEFAULT_SOCKET_PATH;
+    this.adapter = opts.signalingServerAdapter || DEFAULT_ADAPTER;
     this.serverSocket = io(httpServer, opts);
 
     // Ensures only one handler per eventName is registered
@@ -30,13 +32,31 @@ class _SignalingServer {
 
     // Binding
     this.onConnection = this.onConnection.bind(this);
+    this.bindEventHanlders = this.bindEventHanlders.bind(this);
 
-    
+
     this.serverSocket.on('connection', this.onConnection);
   }
 
-  onConnection() {
-    console.log('Client connected!')
+  onConnection(socket) {
+    console.log('Client connected!');
+    utils.hookSingleHandler(socket);
+    this.bindEventHanlders(socket);
+  }
+
+  bindEventHanlders(socket) {
+    Object.keys(inboundEvents).forEach((name) => {
+      const handler = inboundEvents[name].handler;
+      socket.on(name, (event, clientCb) => {
+        const handlerProps = {
+          event,
+          socket,
+          clientCb,
+          adapter: this.adapter
+        };
+        handler(handlerProps);
+      });
+    })
   }
 
 }

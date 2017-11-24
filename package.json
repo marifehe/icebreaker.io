@@ -1,5 +1,5 @@
 {
-  "name": "webrtc-icebreaker",
+  "name": "icebreaker.io",
   "version": "0.0.0",
   "description": "Signaling server for webRTC applications",
   "main": "./src/signaling-server.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elbecita/webrtc-icebreaker.git"
+    "url": "git+https://github.com/elbecita/icebreaker.io.git"
   },
   "keywords": [
     "webrtc",
@@ -17,9 +17,9 @@
   "author": "Maria Fernandez",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/elbecita/webrtc-icebreaker/issues"
+    "url": "https://github.com/elbecita/icebreaker.io/issues"
   },
-  "homepage": "https://github.com/elbecita/webrtc-icebreaker#readme",
+  "homepage": "https://github.com/elbecita/icebreaker.io#readme",
   "dependencies": {
     "express": "^4.16.2",
     "shortid": "^2.2.8",

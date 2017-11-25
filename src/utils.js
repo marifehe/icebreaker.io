@@ -12,6 +12,6 @@ function hookSingleHandler(socket) {
 
 const utils = {
   hookSingleHandler
-}
+};
 
 module.exports = utils;

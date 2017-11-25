@@ -20,7 +20,7 @@ class Adapter {
    * @param {String} [connId]
    */
   static create(peerSocket, connId) {
-    if (connId) {
+    if (!connId) {
       return this._createConnection(peerSocket);
     }
     return this._joinConnection(peerSocket, connId);

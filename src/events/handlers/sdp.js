@@ -22,19 +22,20 @@ function onSdp(_props) {
           const remoteSocket = (connection.peers[0].id === socket.id) ?
             connection.peers[1] : connection.peers[0];
           const socketMessage = {
-            connId: data.connId,
-            data: { sdp: data.sdp }
+            data: { connId: data.connId, sdp: data.sdp }
           };
-          remoteSocket.emit(events.outbound.REMOTE_SDP, socketMessage);
+          console.log('>>>>> sending sdp')
+          // TODO: fix events being undefined here
+          remoteSocket.emit('icebreaker.io.remoteSdp', socketMessage);
         }
       })
       .catch(error => {
         ResponseHelper.failure(error, clientCb);
       });
-    } else {
-      const error = 'Missing data in socket message. connId and sdp fields are expected.';
-      ResponseHelper.failure(error, clientCb);
-    }
+  } else {
+    const error = 'Missing data in socket message. connId and sdp fields are expected.';
+    ResponseHelper.failure(error, clientCb);
+  }
 }
 
 module.exports = onSdp;

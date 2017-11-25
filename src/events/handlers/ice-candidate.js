@@ -19,10 +19,10 @@ function onIceCandidate(_props) {
           const remoteSocket = (connection.peers[0].id === socket.id) ?
             connection.peers[1] : connection.peers[0];
           const socketMessage = {
-            connId: data.connId,
-            data: { candidate: data.candidate }
+            data: { connId: data.connId, candidate: data.candidate }
           };
-          remoteSocket.emit(events.outbound.REMOTE_ICE_CANDIDATE, socketMessage);
+          // TODO: fix events being undefined here
+          remoteSocket.emit('icebreaker.io.remoteCandidate', socketMessage);
         }
       })
       .catch(error => {

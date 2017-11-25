@@ -2,7 +2,7 @@
 
 const io = require('socket.io');
 const utils = require('./utils');
-const DEFAULT_ADAPTER = require('./adapters/webrtc-icebreaker-adapter');
+const DEFAULT_ADAPTER = require('./adapters/icebreaker.io-adapter');
 const inboundEvents = require('./events/events').inbound;
 
 const DEFAULT_SOCKET_PATH = '/socket';

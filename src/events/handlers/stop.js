@@ -1,5 +1,7 @@
 'use strict';
 
+const ResponseHelper = require('./response-helper');
+
 function onStop(_props) {
   console.log('>>>>> STOP event received.');
   const props = _props || {};
@@ -11,17 +13,10 @@ function onStop(_props) {
 
   adapter.remove(data.connId)
     .then(() => {
-      const response = {
-        success: true
-      };
-      clientCb(response);
+      ResponseHelper.success(null, clientCb);
     })
     .catch(error => {
-      const response = {
-        success: false,
-        data: { error }
-      };
-      clientCb(response);
+      ResponseHelper.failure(error, clientCb);
     });
 }
 

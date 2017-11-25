@@ -7,10 +7,14 @@ const onStop = require('./handlers/stop');
 
 const events = {
   inbound: {
-    'icebreaker.candidate': { handler: onIceCandidate },
-    'icebreaker.sdp': { handler: onSdp },
-    'icebreaker.start': { handler: onStart },
-    'icebreaker.stop': { handler: onStop }
+    'icebreaker.io.candidate': { handler: onIceCandidate },
+    'icebreaker.io.sdp': { handler: onSdp },
+    'icebreaker.io.start': { handler: onStart },
+    'icebreaker.io.stop': { handler: onStop }
+  },
+  outbound: {
+    REMOTE_ICE_CANDIDATE: 'icebreaker.io.remoteCandidate',
+    REMOTE_SDP: 'icebreaker.io.remoteSdp'
   }
 };
 

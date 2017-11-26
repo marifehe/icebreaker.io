@@ -1,18 +1,12 @@
 'use strict';
 
 const ResponseHelper = require('./response-helper');
-const events = require('../events').outbound;
 
-function notifyRemotePeer(props) {
-  const adapter = props.adapter;
-  const event = props.event;
-  const data = event.data || {};
-  const socket = props.socket;
-
-  adapter.get(data.connId)
+function notifyRemotePeer(adapter, connId, localSocket) {
+  adapter.get(connId)
     .then(connection => {
       if (connection.peers && connection.peers.length > 1) {
-        const remoteSocket = (connection.peers[0].id === socket.id) ?
+        const remoteSocket = (connection.peers[0].id === localSocket.id) ?
           connection.peers[1] : connection.peers[0];
         // TODO: fix events being undefined here
         remoteSocket.emit('icebreaker.io.remotePeerJoined');
@@ -20,8 +14,13 @@ function notifyRemotePeer(props) {
     });
 }
 
+/**
+* Allocates the peer socket in a new/existing connection, depending on
+* the connId received. If another peer is alredy allocated in the connection
+* and waiting, then a "remotePeerJoined" message is sent to let it know so
+* the webRTC connection can start.
+*/
 function onStart(_props) {
-  console.log('>>>>> START event received: ');
   const props = _props || {};
   const adapter = props.adapter;
   const clientCb = props.clientCb;
@@ -40,7 +39,7 @@ function onStart(_props) {
       // If the local peer joined an existing connection, let the remote
       // one know
       if (connId) {
-        notifyRemotePeer(props);
+        notifyRemotePeer(adapter, connId, socket);
       }
     })
     .catch(error => ResponseHelper.failure(error, clientCb));

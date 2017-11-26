@@ -1,10 +1,11 @@
 'use strict';
 
 const ResponseHelper = require('./response-helper');
-const events = require('../events');
 
+/**
+* Sends the ICE candidate received to the other peer.
+*/
 function onIceCandidate(_props) {
-  console.log('>>>>> ICE CANDIDATE event received.');
   const props = _props || {};
   const adapter = props.adapter;
   const clientCb = props.clientCb;
@@ -28,10 +29,10 @@ function onIceCandidate(_props) {
       .catch(error => {
         ResponseHelper.failure(error, clientCb);
       });
-    } else {
-      const error = 'Missing data in socket message. connId and candidate fields are expected.';
-      ResponseHelper.failure(error, clientCb);
-    }
+  } else {
+    const error = 'Missing data in socket message. connId and candidate fields are expected.';
+    ResponseHelper.failure(error, clientCb);
+  }
 }
 
 module.exports = onIceCandidate;

@@ -7,7 +7,7 @@ function hookSingleHandler(socket) {
       return origOn.call(socket, eventName, listener);
     }
     return socket;
-  }
+  };
 }
 
 const utils = {

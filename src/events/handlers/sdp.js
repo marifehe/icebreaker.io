@@ -1,13 +1,11 @@
 'use strict';
 
 const ResponseHelper = require('./response-helper');
-const events = require('../events');
 
 /**
 * Sends the SDP file received to the other peer.
 */
 function onSdp(_props) {
-  console.log('>>>>> SDP event received.');
   const props = _props || {};
   const adapter = props.adapter;
   const clientCb = props.clientCb;
@@ -24,7 +22,6 @@ function onSdp(_props) {
           const socketMessage = {
             data: { connId: data.connId, sdp: data.sdp }
           };
-          console.log('>>>>> sending sdp')
           // TODO: fix events being undefined here
           remoteSocket.emit('icebreaker.io.remoteSdp', socketMessage);
         }

@@ -1,9 +1,6 @@
 'use strict';
 
-const ResponseHelper = require('./response-helper');
-
 function onDisconnect(_props) {
-  console.log('>>>>> DISCONNECT event received.');
   const props = _props || {};
   const adapter = props.adapter;
   const socket = props.socket;
@@ -13,7 +10,6 @@ function onDisconnect(_props) {
       if (connection.peers && connection.peers.length > 1) {
         const remoteSocket = (connection.peers[0].id === socket.id) ?
           connection.peers[1] : connection.peers[0];
-        console.log('>>>>> sending remoteStop')
         // TODO: fix events being undefined here
         remoteSocket.emit('icebreaker.io.remoteStop');
       }

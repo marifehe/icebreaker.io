@@ -34,12 +34,10 @@ class _SignalingServer {
     this.onConnection = this.onConnection.bind(this);
     this.bindEventHanlders = this.bindEventHanlders.bind(this);
 
-
     this.serverSocket.on('connection', this.onConnection);
   }
 
   onConnection(socket) {
-    console.log('Client connected!');
     utils.hookSingleHandler(socket);
     this.bindEventHanlders(socket);
   }
@@ -56,7 +54,7 @@ class _SignalingServer {
         };
         handler(handlerProps);
       });
-    })
+    });
   }
 
 }
@@ -64,5 +62,5 @@ class _SignalingServer {
 // This allows calling signalingServer without the 'new'
 const SignalingServer = (httpServer, opts) => {
   return new _SignalingServer(httpServer, opts);
-}
+};
 module.exports = SignalingServer;

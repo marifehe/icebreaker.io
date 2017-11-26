@@ -2,7 +2,7 @@
 
 const shortid = require('shortid');
 
-const connections = {}
+const connections = {};
 
 /**
 * Default in-memory webrtc-icebreaker adapter class
@@ -30,7 +30,7 @@ class Adapter {
       connections[connId] = {
         id: connId,
         peers: [peerSocket]
-      }
+      };
       return Promise.resolve(connections[connId]);
     }
     if (connection.peers.length <= 1) {

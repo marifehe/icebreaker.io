@@ -2,17 +2,13 @@
 
 const ResponseHelper = require('./response-helper');
 
-function onStop(_props) {
-  console.log('>>>>> STOP event received.');
+function onDisconnect(_props) {
+  console.log('>>>>> DISCONNECT event received.');
   const props = _props || {};
   const adapter = props.adapter;
-  const clientCb = props.clientCb;
-  const event = props.event;
-  const data = event.data || {};
   const socket = props.socket;
-  console.log('the connection id to stop is: ', data.connId);
 
-  adapter.get(data.connId)
+  adapter.getByPeerId(socket.id)
     .then(connection => {
       if (connection.peers && connection.peers.length > 1) {
         const remoteSocket = (connection.peers[0].id === socket.id) ?
@@ -21,11 +17,9 @@ function onStop(_props) {
         // TODO: fix events being undefined here
         remoteSocket.emit('icebreaker.io.remoteStop');
       }
-      adapter.remove(data.connId)
-        .then(() => ResponseHelper.success(null, clientCb))
-        .catch(error => ResponseHelper.failure(error, clientCb));
+      adapter.remove(connection.id);
     })
-    .catch(error => ResponseHelper.failure(error, clientCb)); // nothing to do
+    .catch(() => {}); // nothing to do
 }
 
-module.exports = onStop;
+module.exports = onDisconnect;

@@ -40,14 +40,6 @@ class Adapter {
     return Promise.reject('No room for a new peer in this connection.');
   }
 
-  static remove(connId) {
-    if (connId && connections[connId]) {
-      delete connections[connId].peers;
-      connections[connId] = undefined;
-    }
-    return Promise.resolve();
-  }
-
   static get(connId) {
     if (connId) {
       const connection = connections[connId];
@@ -56,6 +48,28 @@ class Adapter {
       }
     }
     return Promise.reject('Connection not found.');
+  }
+
+
+  static getByPeerId(peerId) {
+    let connFound;
+    Object.keys(connections).some(connId => {
+      const peerFound = connections[connId].peers.some(peer => peer.id === peerId);
+      if (peerFound) {
+        connFound = connections[connId];
+        return true;
+      }
+    });
+    if (connFound) return Promise.resolve(connFound);
+    return Promise.reject('Connection not found.');
+  }
+
+  static remove(connId) {
+    if (connId && connections[connId]) {
+      //delete connections[connId].peers;
+      delete connections[connId];
+    }
+    return Promise.resolve();
   }
 }
 

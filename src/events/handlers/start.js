@@ -28,8 +28,9 @@ function onStart(_props) {
   const event = props.event;
   const data = event.data || {};
   const socket = props.socket;
+  const connId = data.connId;
 
-  adapter.create(socket, data.connId)
+  adapter.create(socket, connId)
     .then(connection => {
       const data = {
         connId: connection.id,
@@ -38,13 +39,11 @@ function onStart(_props) {
       ResponseHelper.success(data, clientCb);
       // If the local peer joined an existing connection, let the remote
       // one know
-      if (data.connId) {
+      if (connId) {
         notifyRemotePeer(props);
       }
     })
-    .catch(error => {
-      ResponseHelper.failure(error, clientCb);
-    });
+    .catch(error => ResponseHelper.failure(error, clientCb));
 }
 
 module.exports = onStart;

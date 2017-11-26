@@ -30,8 +30,12 @@ function onStart(_props) {
   const socket = props.socket;
 
   adapter.create(socket, data.connId)
-    .then(connId => {
-      ResponseHelper.success({ connId }, clientCb);
+    .then(connection => {
+      const data = {
+        connId: connection.id,
+        isNew: (connection.peers.length === 1)
+      };
+      ResponseHelper.success(data, clientCb);
       // If the local peer joined an existing connection, let the remote
       // one know
       if (data.connId) {

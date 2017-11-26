@@ -20,30 +20,24 @@ class Adapter {
    * @param {String} [connId]
    */
   static create(peerSocket, connId) {
-    if (!connId) {
-      return this._createConnection(peerSocket);
-    }
-    return this._joinConnection(peerSocket, connId);
+    return this._createConnection(peerSocket, connId);
   }
 
   static _createConnection(peerSocket, _connId) {
     const connId = _connId || shortid.generate();
-    connections[connId] = {
-      peers: [peerSocket]
-    }
-    return Promise.resolve(connId);
-  }
-
-  static _joinConnection(peerSocket, connId) {
     const connection = connections[connId];
     if (!connection) {
-      return this._createConnection(peerSocket);
+      connections[connId] = {
+        id: connId,
+        peers: [peerSocket]
+      }
+      return Promise.resolve(connections[connId]);
     }
-    if (connection.peers.length > 1) {
-      return Promise.reject('No room for a new peer in this connection.');
+    if (connection.peers.length <= 1) {
+      connection.peers.push(peerSocket);
+      return Promise.resolve(connection);
     }
-    connection.peers.push(peerSocket);
-    return Promise.resolve(connId);
+    return Promise.reject('No room for a new peer in this connection.');
   }
 
   static remove(connId) {

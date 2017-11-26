@@ -4,15 +4,13 @@ const onDisconnect = require('./handlers/disconnect');
 const onIceCandidate = require('./handlers/ice-candidate');
 const onSdp = require('./handlers/sdp');
 const onStart = require('./handlers/start');
-const onStop = require('./handlers/stop');
 
 const events = {
   inbound: {
     'disconnect': { handler: onDisconnect },
     'icebreaker.io.candidate': { handler: onIceCandidate },
     'icebreaker.io.sdp': { handler: onSdp },
-    'icebreaker.io.start': { handler: onStart },
-    'icebreaker.io.stop': { handler: onStop }
+    'icebreaker.io.start': { handler: onStart }
   },
   outbound: {
     REMOTE_ICE_CANDIDATE: 'icebreaker.io.remoteCandidate',

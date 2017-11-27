@@ -32,18 +32,18 @@ class _SignalingServer {
 
     // Binding
     this.onConnection = this.onConnection.bind(this);
-    this.bindEventHanlders = this.bindEventHanlders.bind(this);
+    this.bindEventHandlers = this.bindEventHandlers.bind(this);
 
     this.serverSocket.on('connection', this.onConnection);
   }
 
   onConnection(socket) {
     utils.hookSingleHandler(socket);
-    this.bindEventHanlders(socket);
+    this.bindEventHandlers(socket);
   }
 
-  bindEventHanlders(socket) {
-    Object.keys(inboundEvents).forEach((name) => {
+  bindEventHandlers(socket) {
+    Object.keys(inboundEvents).forEach(name => {
       const handler = inboundEvents[name].handler;
       socket.on(name, (event, clientCb) => {
         const handlerProps = {

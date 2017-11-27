@@ -2,7 +2,7 @@
 
 const shortid = require('shortid');
 
-const connections = {};
+let connections = {};
 
 /**
 * Default in-memory webrtc-icebreaker adapter class
@@ -17,13 +17,9 @@ class Adapter {
    *   - There is a free spot (only 2 peers per connection allowed).
    *
    * @param {Socket} peerSocket
-   * @param {String} [connId]
+   * @param {String} [_connId]
    */
-  static create(peerSocket, connId) {
-    return this._createConnection(peerSocket, connId);
-  }
-
-  static _createConnection(peerSocket, _connId) {
+  static create(peerSocket, _connId) {
     const connId = _connId || shortid.generate();
     const connection = connections[connId];
     if (!connection) {
@@ -70,6 +66,10 @@ class Adapter {
       delete connections[connId];
     }
     return Promise.resolve();
+  }
+
+  static _flush() {
+    connections = {};
   }
 }
 

@@ -9,7 +9,7 @@ function onIceCandidate(_props) {
   const props = _props || {};
   const adapter = props.adapter;
   const clientCb = props.clientCb;
-  const event = props.event;
+  const event = props.event || {};
   const data = event.data || {};
   const socket = props.socket;
 
@@ -24,6 +24,7 @@ function onIceCandidate(_props) {
           };
           // TODO: fix events being undefined here
           remoteSocket.emit('icebreaker.io.remoteCandidate', socketMessage);
+          ResponseHelper.success(null, clientCb);
         }
       })
       .catch(error => {

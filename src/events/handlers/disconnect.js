@@ -1,11 +1,15 @@
 'use strict';
 
+/**
+* Emits a message to the remote peer (if it exists) to let it know that
+* the connection is going to be closed and removes the connection.
+*/
 function onDisconnect(_props) {
   const props = _props || {};
   const adapter = props.adapter;
   const socket = props.socket;
 
-  adapter.getByPeerId(socket.id)
+  return adapter.getByPeerId(socket.id)
     .then(connection => {
       if (connection.peers && connection.peers.length > 1) {
         const remoteSocket = (connection.peers[0].id === socket.id) ?
@@ -15,7 +19,7 @@ function onDisconnect(_props) {
       }
       adapter.remove(connection.id);
     })
-    .catch(() => {}); // nothing to do
+    .catch(() => Promise.resolve()); // nothing to do
 }
 
 module.exports = onDisconnect;

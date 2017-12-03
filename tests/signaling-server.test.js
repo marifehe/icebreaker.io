@@ -29,7 +29,6 @@ const SignalingServer = proxyquire('../src/signaling-server', {
   'socket.io': ioMock
 });
 const DEFAULT_ADAPTER = require('../src/adapters/icebreaker.io-adapter');
-const utils = require('../src/utils');
 const inboundEvents = require('../src/events/events').inbound;
 
 describe('SignalingServer tests', () => {
@@ -49,7 +48,6 @@ describe('SignalingServer tests', () => {
         listen: () => {}
       };
       const onSpy = sinonSandbox.spy(socketMock, 'on');
-      const hookSingleHandlerStub = sinonSandbox.stub(utils, 'hookSingleHandler');
 
       // Act
       const signalingServer = SignalingServer(httpServer, null);
@@ -58,7 +56,6 @@ describe('SignalingServer tests', () => {
       expect(signalingServer.serverSocket.id).to.equal(socketMock.id);
       expect(signalingServer.adapter).to.equal(DEFAULT_ADAPTER);
       expect(socketMock.opts.path).to.equal('/socket');
-      expect(hookSingleHandlerStub).to.have.been.calledWith(socketMock);
       expect(onSpy).to.have.been.calledWith('connection', signalingServer.onConnection);
     });
   });
@@ -66,7 +63,6 @@ describe('SignalingServer tests', () => {
   describe('onConnection()', () => {
     it('should bind event handlers', () => {
       // Arrange
-      const hookSingleHandlerStub = sinonSandbox.stub(utils, 'hookSingleHandler');
       const signalingServer = SignalingServer();
       const bindEventHandlersStub = sinonSandbox.stub(signalingServer, 'bindEventHandlers');
       const testSocket = 'test-socket';
@@ -74,7 +70,6 @@ describe('SignalingServer tests', () => {
       signalingServer.onConnection(testSocket);
 
       // Assert
-      expect(hookSingleHandlerStub).to.have.been.calledWith(testSocket);
       expect(bindEventHandlersStub).to.have.been.calledWith(testSocket);
     })
   });
@@ -82,7 +77,6 @@ describe('SignalingServer tests', () => {
   describe('bindEventHandlers()', () => {
     it('should bind the event handlers for each event', () => {
       // Arrange
-      sinonSandbox.stub(utils, 'hookSingleHandler');
       const signalingServer = SignalingServer();
       const testSocket = {
         on: () => {}

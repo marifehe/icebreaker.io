@@ -1,7 +1,6 @@
 'use strict';
 
 const io = require('socket.io');
-const utils = require('./utils');
 const DEFAULT_ADAPTER = require('./adapters/icebreaker.io-adapter');
 const inboundEvents = require('./events/events').inbound;
 
@@ -27,9 +26,6 @@ class _SignalingServer {
     this.adapter = opts.signalingServerAdapter || DEFAULT_ADAPTER;
     this.serverSocket = io(httpServer, opts);
 
-    // Ensures only one handler per eventName is registered
-    utils.hookSingleHandler(this.serverSocket);
-
     // Binding
     this.onConnection = this.onConnection.bind(this);
     this.bindEventHandlers = this.bindEventHandlers.bind(this);
@@ -38,7 +34,6 @@ class _SignalingServer {
   }
 
   onConnection(socket) {
-    utils.hookSingleHandler(socket);
     this.bindEventHandlers(socket);
   }
 

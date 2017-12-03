@@ -3,7 +3,7 @@
 
 icebreaker.io enables peer-to-peer real-time communications, using WebRTC technology. It is built on top of [socket.io](https://github.com/socketio/socket.io), and it basically allows two peers to resolve how to connect over the internet and start an RTCPeerConnection. It consists in:
 
-- a Node.js server (this repository) needed for the signaling process
+- a Node.js signaling server (this repository)
 - a [Javascript client library](https://github.com/elbecita/icebreaker.io-client) for the browser
 
 ## Context

@@ -17,9 +17,10 @@ function onDisconnect(_props) {
         // TODO: fix events being undefined here
         remoteSocket.emit('icebreaker.io.remoteStop');
       }
+      socket.conn.close();
       adapter.remove(connection.id);
     })
-    .catch(() => Promise.resolve()); // nothing to do
+    .catch(() => socket.conn.close());
 }
 
 module.exports = onDisconnect;

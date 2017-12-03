@@ -19,7 +19,7 @@ describe('disconnect event tests', () => {
   });
 
   it('shoud emit a remoteStop event for the remote peer if it exists' +
-    'and remove the connection', (done) => {
+    'and remove the connection', done => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -38,7 +38,7 @@ describe('disconnect event tests', () => {
     }
     const emitSpy = sinonSandbox.spy(remotePeerSocket, 'emit');
     sinonSandbox.stub(Adapter, 'getByPeerId').callsFake(() => Promise.resolve(connection));
-    sinonSandbox.stub(Adapter, 'remove').callsFake((connId) => {
+    sinonSandbox.stub(Adapter, 'remove').callsFake(connId => {
       // Assert
       expect(connId).to.equal(connection.id);
       expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteStop');
@@ -48,7 +48,60 @@ describe('disconnect event tests', () => {
     onDisconnect(props);
   });
 
-  it('shoud not do anything if the connection does not exist', (done) => {
+  it('shoud emit a remoteStop event for the remote peer if it exists' +
+    'and remove the connection (test to cover peers index path)', done => {
+    // Arrange
+    const localPeerSocket = {
+      id: 'local-peer-id'
+    };
+    const remotePeerSocket = {
+      id: 'remote-peer-id',
+      emit: () => {}
+    };
+    const connection = {
+      id: 'test-connection-id',
+      peers: [remotePeerSocket, localPeerSocket]
+    };
+    const props = {
+      adapter: Adapter,
+      socket: localPeerSocket
+    }
+    const emitSpy = sinonSandbox.spy(remotePeerSocket, 'emit');
+    sinonSandbox.stub(Adapter, 'getByPeerId').callsFake(() => Promise.resolve(connection));
+    sinonSandbox.stub(Adapter, 'remove').callsFake(connId => {
+      // Assert
+      expect(connId).to.equal(connection.id);
+      expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteStop');
+      done();
+    });
+    // Act
+    onDisconnect(props);
+  });
+
+  it('shoud not emit a remoteStop event if there is no remote peer in the connection', done => {
+    // Arrange
+    const localPeerSocket = {
+      id: 'local-peer-id'
+    };
+    const connection = {
+      id: 'test-connection-id',
+      peers: [localPeerSocket]
+    };
+    const props = {
+      adapter: Adapter,
+      socket: localPeerSocket
+    }
+    sinonSandbox.stub(Adapter, 'getByPeerId').callsFake(() => Promise.resolve(connection));
+    sinonSandbox.stub(Adapter, 'remove').callsFake(connId => {
+      // Assert
+      expect(connId).to.equal(connection.id);
+      done();
+    });
+    // Act
+    onDisconnect(props);
+  });
+
+  it('shoud not do anything if the connection does not exist', done => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'

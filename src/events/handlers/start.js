@@ -28,11 +28,9 @@ function onStart(_props) {
 
   adapter.create(socket, connId)
     .then(connection => {
-      // If the local peer joined an existing connection, let the remote
-      // one know
-      if (connId) {
-        notifyRemotePeer(adapter, connection, socket);
-      }
+      // If the local peer joined an existing connection, the remote peer
+      // needs to be notified
+      notifyRemotePeer(adapter, connection, socket);
       const data = {
         connId: connection.id,
         isNew: (connection.peers.length === 1)

@@ -24,8 +24,8 @@ function onIceCandidate(_props) {
           };
           // TODO: fix events being undefined here
           remoteSocket.emit('icebreaker.io.remoteCandidate', socketMessage);
-          ResponseHelper.success(null, clientCb);
         }
+        ResponseHelper.success(null, clientCb);
       })
       .catch(error => {
         ResponseHelper.failure(error, clientCb);

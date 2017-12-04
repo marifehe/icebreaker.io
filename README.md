@@ -16,10 +16,9 @@ WebRTC enables peer-to-peer communications, but the signaling methods and protoc
 - Etc.
 
 ## Installation
-The package is currently in beta status, and should be installed with:
 
 ```bash
-npm install icebreaker.io@beta --save
+npm install icebreaker.io --save
 ```
 
 ## How to use

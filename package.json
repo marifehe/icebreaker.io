@@ -1,7 +1,7 @@
 {
   "name": "icebreaker.io",
-  "version": "0.0.0",
-  "description": "Signaling server for webRTC applications",
+  "version": "0.0.1",
+  "description": "Signaling server for peer-to-peer WebRTC communications",
   "main": "./src/signaling-server.js",
   "scripts": {
     "lint": "gulp lint",
@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/elbecita/icebreaker.io#readme",
   "dependencies": {
-    "express": "^4.16.2",
-    "shortid": "^2.2.8",
-    "socket.io": "^2.0.4"
+    "express": "4.16.2",
+    "shortid": "2.2.8",
+    "socket.io": "2.0.4"
   },
   "devDependencies": {
     "chai": "^4.1.2",

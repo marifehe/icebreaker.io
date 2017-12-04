@@ -1,6 +1,6 @@
 {
   "name": "icebreaker.io",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Signaling server for peer-to-peer WebRTC communications",
   "main": "./src/signaling-server.js",
   "scripts": {

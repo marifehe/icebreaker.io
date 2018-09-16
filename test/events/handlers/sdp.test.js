@@ -1,16 +1,20 @@
 'use strict';
 
+/* eslint-env mocha */
+/* eslint-disable no-unused-expressions */
+
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
+
 const expect = chai.expect;
 chai.use(sinonChai);
 
 const Adapter = require('../../../src/adapters/icebreaker.io-adapter');
-const onIceCandidate = require('../../../src/events/handlers/ice-candidate');
+const onSdp = require('../../../src/events/handlers/sdp');
 const ResponseHelper = require('../../../src/events/handlers/response-helper');
 
-describe('ice-candidate event tests', () => {
+describe('sdp event tests', () => {
   let sinonSandbox;
   beforeEach(() => {
     sinonSandbox = sinon.sandbox.create();
@@ -19,7 +23,7 @@ describe('ice-candidate event tests', () => {
     sinonSandbox.restore();
   });
 
-  it('shoud emit a remoteCandidate event sending the ice candidate to the remote peer', done => {
+  it('shoud emit a remoteSdp event sending the sdp file to the remote peer', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -37,7 +41,7 @@ describe('ice-candidate event tests', () => {
       socket: localPeerSocket,
       event: {
         data: {
-          candidate: 'test-ice-candidate',
+          sdp: 'test-sdp',
           connId: connection.id
         }
       }
@@ -46,49 +50,15 @@ describe('ice-candidate event tests', () => {
     sinonSandbox.stub(Adapter, 'get').callsFake(() => Promise.resolve(connection));
     sinonSandbox.stub(ResponseHelper, 'success').callsFake(() => {
       // Assert
-      expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteCandidate');
+      expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteSdp');
       done();
     });
     // Act
-    onIceCandidate(props);
+    onSdp(props);
   });
 
-  it('shoud emit a remoteCandidate event sending the ice candidate to the remote peer', done => {
-    // Arrange
-    const localPeerSocket = {
-      id: 'local-peer-id'
-    };
-    const remotePeerSocket = {
-      id: 'remote-peer-id',
-      emit: () => {}
-    };
-    const connection = {
-      id: 'test-connection-id',
-      peers: [localPeerSocket, remotePeerSocket]
-    };
-    const props = {
-      adapter: Adapter,
-      socket: localPeerSocket,
-      event: {
-        data: {
-          candidate: 'test-ice-candidate',
-          connId: connection.id
-        }
-      }
-    };
-    const emitSpy = sinonSandbox.spy(remotePeerSocket, 'emit');
-    sinonSandbox.stub(Adapter, 'get').callsFake(() => Promise.resolve(connection));
-    sinonSandbox.stub(ResponseHelper, 'success').callsFake(() => {
-      // Assert
-      expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteCandidate');
-      done();
-    });
-    // Act
-    onIceCandidate(props);
-  });
-
-  it('shoud emit a remoteCandidate event sending the ice candidate to the remote peer' +
-    '(test to cover peers index path)', done => {
+  it('shoud emit a remoteSdp event sending the sdp file to the remote peer' +
+    '(test to cover peers index path)', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -106,7 +76,7 @@ describe('ice-candidate event tests', () => {
       socket: localPeerSocket,
       event: {
         data: {
-          candidate: 'test-ice-candidate',
+          sdp: 'test-sdp',
           connId: connection.id
         }
       }
@@ -115,14 +85,14 @@ describe('ice-candidate event tests', () => {
     sinonSandbox.stub(Adapter, 'get').callsFake(() => Promise.resolve(connection));
     sinonSandbox.stub(ResponseHelper, 'success').callsFake(() => {
       // Assert
-      expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteCandidate');
+      expect(emitSpy).to.have.been.calledWith('icebreaker.io.remoteSdp');
       done();
     });
     // Act
-    onIceCandidate(props);
+    onSdp(props);
   });
 
-  it('shoud not emit a remoteCandidate event if there is no remote peer in the connection', done => {
+  it('shoud not emit a remoteSdp event if there is no remote peer in the connection', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -136,7 +106,7 @@ describe('ice-candidate event tests', () => {
       socket: localPeerSocket,
       event: {
         data: {
-          candidate: 'test-ice-candidate',
+          sdp: 'test-sdp',
           connId: connection.id
         }
       }
@@ -147,10 +117,10 @@ describe('ice-candidate event tests', () => {
       done();
     });
     // Act
-    onIceCandidate(props);
+    onSdp(props);
   });
 
-  it('shoud return the error to the client if the connection does not exist', done => {
+  it('shoud return the error to the client if the connection does not exist', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -160,23 +130,23 @@ describe('ice-candidate event tests', () => {
       socket: localPeerSocket,
       event: {
         data: {
-          candidate: 'test-ice-candidate',
+          sdp: 'test-sdp',
           connId: 'test-connection-id'
         }
       }
     };
     const testError = 'test-error';
     sinonSandbox.stub(Adapter, 'get').callsFake(() => Promise.reject(testError));
-    sinonSandbox.stub(ResponseHelper, 'failure').callsFake(error => {
+    sinonSandbox.stub(ResponseHelper, 'failure').callsFake((error) => {
       // Assert
       expect(error).to.equal(testError);
       done();
     });
     // Act
-    onIceCandidate(props);
+    onSdp(props);
   });
 
-  it('shoud return the error to the client if there is no connId in the received message', done => {
+  it('shoud return the error to the client if there is no connId in the received message', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -186,20 +156,20 @@ describe('ice-candidate event tests', () => {
       socket: localPeerSocket,
       event: {
         data: {
-          candidate: 'test-ice-candidate'
+          sdp: 'test-sdp',
         }
       }
     };
-    sinonSandbox.stub(ResponseHelper, 'failure').callsFake(error => {
+    sinonSandbox.stub(ResponseHelper, 'failure').callsFake((error) => {
       // Assert
-      expect(error).to.equal('Missing data in socket message. connId and candidate fields are expected.');
+      expect(error).to.equal('Missing data in socket message. connId and sdp fields are expected.');
       done();
     });
     // Act
-    onIceCandidate(props);
+    onSdp(props);
   });
 
-  it('shoud return the error to the client if there is no candidate in the received message', done => {
+  it('shoud return the error to the client if there is no sdp in the received message', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -213,12 +183,12 @@ describe('ice-candidate event tests', () => {
         }
       }
     };
-    sinonSandbox.stub(ResponseHelper, 'failure').callsFake(error => {
+    sinonSandbox.stub(ResponseHelper, 'failure').callsFake((error) => {
       // Assert
-      expect(error).to.equal('Missing data in socket message. connId and candidate fields are expected.');
+      expect(error).to.equal('Missing data in socket message. connId and sdp fields are expected.');
       done();
     });
     // Act
-    onIceCandidate(props);
+    onSdp(props);
   });
 });

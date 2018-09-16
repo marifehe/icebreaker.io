@@ -17,25 +17,21 @@ function notifyRemotePeer(adapter, connection, localSocket) {
 * and waiting, then a "remotePeerJoined" message is sent to let it know so
 * the webRTC connection can start.
 */
-function onStart(_props) {
-  const props = _props || {};
-  const adapter = props.adapter;
-  const clientCb = props.clientCb;
-  const event = props.event || {};
-  const data = event.data || {};
-  const connId = data.connId;
-  const socket = props.socket;
+function onStart(props = {}) {
+  const { adapter, clientCb, event = {}, socket } = props;
+  const { data = {} } = event;
+  const { connId } = data;
 
   adapter.create(socket, connId)
-    .then(connection => {
+    .then((connection) => {
       // If the local peer joined an existing connection, the remote peer
       // needs to be notified
       notifyRemotePeer(adapter, connection, socket);
-      const data = {
+      const responseData = {
         connId: connection.id,
         isNew: (connection.peers.length === 1)
       };
-      ResponseHelper.success(data, clientCb);
+      ResponseHelper.success(responseData, clientCb);
     })
     .catch(error => ResponseHelper.failure(error, clientCb));
 }

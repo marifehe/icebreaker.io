@@ -1,9 +1,13 @@
 'use strict';
 
+/* eslint-env mocha */
+/* eslint-disable no-unused-expressions */
+
 const proxyquire = require('proxyquire');
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
+
 const expect = chai.expect;
 chai.use(sinonChai);
 
@@ -17,14 +21,6 @@ const ioMock = (httpServer, opts) => {
   return socketMock;
 };
 
-/*require('socket.io');
-const ioResolved = require.resolve('socket.io');
-require.cache[ioResolved] = {
-  id: ioResolved,
-  filename: ioResolved,
-  loaded: true,
-  exports: ioMock
-};*/
 const SignalingServer = proxyquire('../src/signaling-server', {
   'socket.io': ioMock
 });
@@ -41,7 +37,7 @@ describe('SignalingServer tests', () => {
   });
 
   describe('constructor()', () => {
-    it('shoud initialize the server socket', () => {
+    it.only('shoud initialize the server socket', () => {
       // Arrange
       const httpServer = {
         id: 'test-http-server',
@@ -71,7 +67,7 @@ describe('SignalingServer tests', () => {
 
       // Assert
       expect(bindEventHandlersStub).to.have.been.calledWith(testSocket);
-    })
+    });
   });
 
   describe('bindEventHandlers()', () => {
@@ -88,8 +84,8 @@ describe('SignalingServer tests', () => {
 
       // Assert
       const eventNames = Object.keys(inboundEvents);
-      expect(onSpy).to.have.callCount(eventNames.length)
-      eventNames.forEach(name => {
+      expect(onSpy).to.have.callCount(eventNames.length);
+      eventNames.forEach((name) => {
         expect(onSpy).to.have.been.calledWith(name);
       });
     });

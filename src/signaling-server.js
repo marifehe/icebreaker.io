@@ -16,12 +16,16 @@ class _SignalingServer {
    * @param {http.Server|Number|Object} httpServer, port or options
    * @param {Object} [opts]
    */
-  constructor(httpServer, opts) {
+  constructor(_httpServer = {}, _opts = {}) {
+    let httpServer = _httpServer;
+    let opts;
+
     if (typeof httpServer === 'object' && !httpServer.listen) {
       opts = httpServer;
       httpServer = null;
     }
-    opts = opts || {};
+
+    opts = opts || _opts || {};
     opts.path = opts.path || DEFAULT_SOCKET_PATH;
     this.adapter = opts.signalingServerAdapter || DEFAULT_ADAPTER;
     this.serverSocket = io(httpServer, opts);
@@ -38,7 +42,7 @@ class _SignalingServer {
   }
 
   bindEventHandlers(socket) {
-    Object.keys(inboundEvents).forEach(name => {
+    Object.keys(inboundEvents).forEach((name) => {
       const handler = inboundEvents[name].handler;
       socket.on(name, (event, clientCb) => {
         const handlerProps = {
@@ -55,7 +59,5 @@ class _SignalingServer {
 }
 
 // This allows calling signalingServer without the 'new'
-const SignalingServer = (httpServer, opts) => {
-  return new _SignalingServer(httpServer, opts);
-};
+const SignalingServer = (httpServer = {}, opts = {}) => new _SignalingServer(httpServer, opts);
 module.exports = SignalingServer;

@@ -7,7 +7,7 @@ const onStart = require('./handlers/start');
 
 const events = {
   inbound: {
-    'disconnect': { handler: onDisconnect },
+    disconnect: { handler: onDisconnect },
     'icebreaker.io.candidate': { handler: onIceCandidate },
     'icebreaker.io.sdp': { handler: onSdp },
     'icebreaker.io.start': { handler: onStart }

@@ -1,8 +1,12 @@
 'use strict';
 
+/* eslint-env mocha */
+/* eslint-disable no-unused-expressions */
+
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
+
 const expect = chai.expect;
 chai.use(sinonChai);
 
@@ -25,7 +29,7 @@ describe('Adapter tests', () => {
 
       // Act & Assert
       return Adapter.create(peerSocket)
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.be.a('string');
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
@@ -40,7 +44,7 @@ describe('Adapter tests', () => {
 
       // Act & Assert
       return Adapter.create(peerSocket, connId)
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
@@ -56,13 +60,13 @@ describe('Adapter tests', () => {
 
       // Act & Assert
       return Adapter.create(peerSocket, connId)
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
         })
         .then(() => Adapter.create(peerSocket2, connId))
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(2);
           expect(connection.peers[1]).to.equal(peerSocket2);
@@ -70,7 +74,7 @@ describe('Adapter tests', () => {
     });
 
     it('shoud reject if there is no room for another socket for the' +
-      'provided connId', done => {
+      'provided connId', (done) => {
       // Arrange
       const connId = 'test-connId';
       const peerSocket = 'test-socket';
@@ -79,19 +83,19 @@ describe('Adapter tests', () => {
 
       // Act & Assert
       Adapter.create(peerSocket, connId)
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
         })
         .then(() => Adapter.create(peerSocket2, connId))
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(2);
           expect(connection.peers[1]).to.equal(peerSocket2);
         })
         .then(() => Adapter.create(peerSocket3, connId))
-        .catch(error => {
+        .catch((error) => {
           expect(error).to.equal('No room for a new peer in this connection.');
           done();
         });
@@ -107,17 +111,17 @@ describe('Adapter tests', () => {
       // Act & Assert
       return Adapter.create(peerSocket, connId)
         .then(() => Adapter.get(connId))
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
         });
     });
 
-    it('shoud reject if the connection does not exist', done => {
+    it('shoud reject if the connection does not exist', (done) => {
       // Act & Assert
       Adapter.get('non-existent-connId')
-        .catch(error => {
+        .catch((error) => {
           expect(error).to.equal('Connection not found.');
           done();
         });
@@ -135,17 +139,17 @@ describe('Adapter tests', () => {
       // Act & Assert
       return Adapter.create(peerSocket, connId)
         .then(() => Adapter.getByPeerId(peerSocket.id))
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
         });
     });
 
-    it('shoud reject if the connection does not exist', done => {
+    it('shoud reject if the connection does not exist', (done) => {
       // Act & Assert
       Adapter.getByPeerId('non-existent-peerId')
-        .catch(error => {
+        .catch((error) => {
           expect(error).to.equal('Connection not found.');
           done();
         });
@@ -161,14 +165,14 @@ describe('Adapter tests', () => {
       // Act & Assert
       Adapter.create(peerSocket, connId)
         .then(() => Adapter.get(connId))
-        .then(connection => {
+        .then((connection) => {
           expect(connection.id).to.equal(connId);
           expect(connection.peers.length).to.equal(1);
           expect(connection.peers[0]).to.equal(peerSocket);
         })
         .then(() => Adapter.remove(connId))
         .then(() => Adapter.get(connId))
-        .catch(error => {
+        .catch((error) => {
           expect(error).to.equal('Connection not found.');
           done();
         });

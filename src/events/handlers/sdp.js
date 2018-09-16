@@ -5,17 +5,13 @@ const ResponseHelper = require('./response-helper');
 /**
 * Sends the SDP file received to the other peer.
 */
-function onSdp(_props) {
-  const props = _props || {};
-  const adapter = props.adapter;
-  const clientCb = props.clientCb;
-  const event = props.event || {};
-  const data = event.data || {};
-  const socket = props.socket;
+function onSdp(props = {}) {
+  const { adapter, clientCb, event = {}, socket } = props;
+  const { data = {} } = event;
 
   if (data.connId && data.sdp) {
     adapter.get(data.connId)
-      .then(connection => {
+      .then((connection) => {
         if (connection.peers && connection.peers.length > 1) {
           const remoteSocket = (connection.peers[0].id === socket.id) ?
             connection.peers[1] : connection.peers[0];
@@ -25,9 +21,10 @@ function onSdp(_props) {
           // TODO: fix events being undefined here
           remoteSocket.emit('icebreaker.io.remoteSdp', socketMessage);
         }
+
         ResponseHelper.success(null, clientCb);
       })
-      .catch(error => {
+      .catch((error) => {
         ResponseHelper.failure(error, clientCb);
       });
   } else {

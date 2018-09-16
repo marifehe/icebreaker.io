@@ -1,8 +1,12 @@
 'use strict';
 
+/* eslint-env mocha */
+/* eslint-disable no-unused-expressions */
+
 const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
+
 const expect = chai.expect;
 chai.use(sinonChai);
 
@@ -19,7 +23,7 @@ describe('start event tests', () => {
     sinonSandbox.restore();
   });
 
-  it('should create the connection', done => {
+  it('should create the connection', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -33,7 +37,7 @@ describe('start event tests', () => {
       socket: localPeerSocket
     };
     sinonSandbox.stub(Adapter, 'create').callsFake(() => Promise.resolve(connection));
-    sinonSandbox.stub(ResponseHelper, 'success').callsFake(data => {
+    sinonSandbox.stub(ResponseHelper, 'success').callsFake((data) => {
       // Assert
       expect(data.connId).to.equal(connection.id);
       expect(data.isNew).to.be.true;
@@ -43,7 +47,7 @@ describe('start event tests', () => {
     onStart(props);
   });
 
-  it('should return isNew set to false if the connection already existed', done => {
+  it('should return isNew set to false if the connection already existed', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -66,7 +70,7 @@ describe('start event tests', () => {
       }
     };
     sinonSandbox.stub(Adapter, 'create').callsFake(() => Promise.resolve(connection));
-    sinonSandbox.stub(ResponseHelper, 'success').callsFake(data => {
+    sinonSandbox.stub(ResponseHelper, 'success').callsFake((data) => {
       // Assert
       expect(data.connId).to.equal(connection.id);
       expect(data.isNew).to.be.false;
@@ -76,7 +80,7 @@ describe('start event tests', () => {
     onStart(props);
   });
 
-  it('should emit a remotePeerJoined event if the peer is joining an existing connection', done => {
+  it('should emit a remotePeerJoined event if the peer is joining an existing connection', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -110,7 +114,7 @@ describe('start event tests', () => {
   });
 
   it('should emit a remotePeerJoined event if the peer is joining an existing connection' +
-    '(test to cover peers index path)', done => {
+    '(test to cover peers index path)', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -143,7 +147,7 @@ describe('start event tests', () => {
     onStart(props);
   });
 
-  it('should return the error to the client if the connection can not be created', done => {
+  it('should return the error to the client if the connection can not be created', (done) => {
     // Arrange
     const localPeerSocket = {
       id: 'local-peer-id'
@@ -154,7 +158,7 @@ describe('start event tests', () => {
     };
     const testError = 'test-error-when-creating-connection';
     sinonSandbox.stub(Adapter, 'create').callsFake(() => Promise.reject(testError));
-    sinonSandbox.stub(ResponseHelper, 'failure').callsFake(error => {
+    sinonSandbox.stub(ResponseHelper, 'failure').callsFake((error) => {
       // Assert
       expect(error).to.equal(testError);
       done();
